@@ -20,6 +20,8 @@ builder.Services.AddHttpClient("EventService", client =>
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -35,13 +37,23 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 var app = builder.Build();
 
-app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
-
-app.UseAuthorization();
-
-app.MapControllers();
 app.MapOpenApi();
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Auth Service API");
+        c.RoutePrefix = string.Empty;
+    });
+
+}
+
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
+
 
 app.Run();

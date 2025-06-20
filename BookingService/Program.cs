@@ -35,14 +35,13 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 var app = builder.Build();
 
-
-
-app.MapOpenApi();
-
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapOpenApi();
 
 app.Run();
